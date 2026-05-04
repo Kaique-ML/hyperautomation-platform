@@ -1,0 +1,24 @@
+{
+  "name": "Email Triage — Classificação por IA",
+  "nodes": [
+    {
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "parameters": {"pollTimes": {"item": [{"mode": "everyMinute"}]}}
+    },
+    {
+      "name": "Classificar com IA",
+      "type": "n8n-nodes-base.httpRequest",
+      "parameters": {
+        "url": "http://api:8000/email/classify",
+        "method": "POST",
+        "body": {"subject": "={{$json.subject}}", "body": "={{$json.body}}", "sender": "={{$json.from}}"}
+      }
+    },
+    {
+      "name": "Roteador",
+      "type": "n8n-nodes-base.switch",
+      "parameters": {"value": "={{$json.categoria}}"}
+    }
+  ]
+}
